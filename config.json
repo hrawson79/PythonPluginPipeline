@@ -1,0 +1,23 @@
+{
+    "generators": [
+        {
+            "name": "stage_1",
+            "plugin": "default_gen",
+            "output": "stage_2"
+        }
+    ],
+    "processors": [
+        {
+            "name": "stage_2",
+            "plugin": "default_pro",
+            "output": "stage_3"
+        }
+    ],
+    "writers": [
+        {
+            "name": "stage_3",
+            "plugin": "default_wri",
+            "output": "none"
+        }
+    ]
+}
