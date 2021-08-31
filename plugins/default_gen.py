@@ -20,7 +20,7 @@ class Generator(threading.Thread):
     def run(self):
         log.LogMsg(Logger.INFO, 'Generator started running')
         # Generate data and put it on out_q
-        for i in range(100):
+        for i in range(10):
             self.q_out.put(i)
         
         # Send the shutdown signal

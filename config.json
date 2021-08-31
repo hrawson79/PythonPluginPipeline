@@ -1,23 +1,32 @@
-{
-    "generators": [
-        {
-            "name": "stage_1",
-            "plugin": "default_gen",
-            "output": "stage_2"
+[
+    {
+        "name": "stage_1",
+        "plugin": ".default_gen",
+        "type": "Generator",
+        "inTopic": "None",
+        "outTopic": "topic_1",
+        "config": {
+            "logLevel": "5"
         }
-    ],
-    "processors": [
-        {
-            "name": "stage_2",
-            "plugin": "default_pro",
-            "output": "stage_3"
+    },
+    {
+        "name": "stage_2",
+        "plugin": ".default_pro",
+        "type": "Processor",
+        "inTopic": "topic_1",
+        "outTopic": "topic_2",
+        "config": {
+            "logLevel": "5"
         }
-    ],
-    "writers": [
-        {
-            "name": "stage_3",
-            "plugin": "default_wri",
-            "output": "none"
+    },
+    {
+        "name": "stage_3",
+        "plugin": ".default_wri",
+        "type": "Writer",
+        "inTopic": "topic_2",
+        "outTopic": "None",
+        "config": {
+            "logLevel": "5"
         }
-    ]
-}
+    }
+]
