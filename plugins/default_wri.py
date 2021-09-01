@@ -10,27 +10,41 @@ _shutdown = -1
 log = Log(5)
 
 class Writer(threading.Thread):
-    def __init__(self, q_in, threadID, name, counter):
+    def __init__(self, q_in, threadID, name, config):
         threading.Thread.__init__(self)
         self.q_in = q_in
         self.threadID = threadID
         self.name = name
-        self.counter = counter
+        self.messageCount = 0
+
+        # Config
+        if 'logLevel' in config:
+            self.logLevel = config['logLevel']
+        else:
+            self.logLevel = 5
+
+        log.setLevel(int(self.logLevel))
 
     def run(self):
-        log.LogMsg(Logger.INFO, 'Writer started running')
+        log.LogMsg(Logger.INFO, self.name + ' started running')
         
+        # Write data
+        self.write()
+
+        log.LogMsg(Logger.INFO, self.name + ' finished running and wrote ' + str(self.messageCount) + ' messages')
+
+    def write(self):
+        # Add logic to write data to file here
         while True:
             # Get data off of q_in
             data = self.q_in.get()
 
             # Check for shutdown signal
             if data is _shutdown:
-                log.LogMsg(Logger.INFO, 'Writer received shutdown')
+                log.LogMsg(Logger.INFO, self.name + ' received shutdown')
                 self.q_in.task_done()
                 break
             else:
-                log.LogMsg(Logger.INFO, 'Writer received ' + str(data) + ' to process')
+                log.LogMsg(Logger.INFO, self.name + ' received ' + str(data) + ' to process')
                 self.q_in.task_done()
-
-        log.LogMsg(Logger.INFO, 'Writer finished running')
+                self.messageCount += 1

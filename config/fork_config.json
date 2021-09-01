@@ -1,0 +1,42 @@
+[
+    {
+        "name": "stage-1",
+        "plugin": ".default_gen",
+        "type": "Generator",
+        "inTopic": "None",
+        "outTopic": "topic_1",
+        "config": {
+            "logLevel": "5"
+        }
+    },
+    {
+        "name": "stage-2",
+        "plugin": ".default_fork",
+        "type": "Fork",
+        "inTopic": "topic_1",
+        "outTopic": ["topic_2", "topic_3"],
+        "config": {
+            "logLevel": "5"
+        }
+    },
+    {
+        "name": "stage-3-1",
+        "plugin": ".default_wri",
+        "type": "Writer",
+        "inTopic": "topic_2",
+        "outTopic": "None",
+        "config": {
+            "logLevel": "5"
+        }
+    },
+    {
+        "name": "stage-3-2",
+        "plugin": ".default_wri",
+        "type": "Writer",
+        "inTopic": "topic_3",
+        "outTopic": "None",
+        "config": {
+            "logLevel": "5"
+        }
+    }
+]

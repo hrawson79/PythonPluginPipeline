@@ -1,6 +1,6 @@
 [
     {
-        "name": "stage_1",
+        "name": "stage-1",
         "plugin": ".default_gen",
         "type": "Generator",
         "inTopic": "None",
@@ -10,7 +10,7 @@
         }
     },
     {
-        "name": "stage_2",
+        "name": "stage-2",
         "plugin": ".default_pro",
         "type": "Processor",
         "inTopic": "topic_1",
@@ -20,7 +20,7 @@
         }
     },
     {
-        "name": "stage_3",
+        "name": "stage-3",
         "plugin": ".default_wri",
         "type": "Writer",
         "inTopic": "topic_2",
