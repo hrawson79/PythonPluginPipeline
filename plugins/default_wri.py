@@ -22,6 +22,11 @@ class Writer(threading.Thread):
             self.logLevel = config['logLevel']
         else:
             self.logLevel = 5
+        
+        if 'showStage' in config:
+            self.showStage = config['showStage']
+        else:
+            self.showStage = False
 
         log.setLevel(int(self.logLevel))
 
@@ -45,6 +50,6 @@ class Writer(threading.Thread):
                 self.q_in.task_done()
                 break
             else:
-                log.LogMsg(Logger.INFO, self.name + ' received ' + str(data) + ' to process')
+                #log.LogMsg(Logger.DEBUG, self.name + ' received ' + str(data) + ' to process')
                 self.q_in.task_done()
                 self.messageCount += 1

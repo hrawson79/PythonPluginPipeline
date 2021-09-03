@@ -23,6 +23,11 @@ class Generator(threading.Thread):
         else:
             self.logLevel = 5
 
+        if 'showStage' in config:
+            self.showStage = config['showStage']
+        else:
+            self.showStage = False
+
         log.setLevel(int(self.logLevel))
 
     def run(self):

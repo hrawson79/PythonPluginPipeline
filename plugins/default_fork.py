@@ -24,6 +24,8 @@ class Fork(threading.Thread):
         else:
             self.logLevel = 5
 
+        self.showStage = False
+
         log.setLevel(int(self.logLevel))
 
     def run(self):

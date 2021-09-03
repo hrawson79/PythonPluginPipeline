@@ -24,6 +24,11 @@ class Processor(threading.Thread):
         else:
             self.logLevel = 5
 
+        if 'showStage' in config:
+            self.showStage = config['showStage']
+        else:
+            self.showStage = False
+
         log.setLevel(int(self.logLevel))
 
     def run(self):
@@ -49,7 +54,7 @@ class Processor(threading.Thread):
                 self.q_in.task_done()
                 break
             else:
-                log.LogMsg(Logger.INFO, self.name + ' received ' + str(data) + ' to process')
+                log.LogMsg(Logger.DEBUG, self.name + ' received ' + str(data) + ' to process')
                 self.q_out.put(data * 2)
                 self.q_in.task_done()
                 self.messageCount += 1

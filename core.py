@@ -1,6 +1,9 @@
 #core.py
 import importlib
 from queue import Queue
+import numpy as np
+import cv2
+import time
 
 from framework.logger import Log, Logger
 
@@ -29,6 +32,16 @@ class Pipeline:
         for plugin in self._plugins:
             plugin.start()
         
+        # Display each stage's current frame, if showStage is true
+        while True:
+            for plugin in self._plugins:
+                if plugin.showStage:
+                    cv2.imshow(plugin.name, plugin.currentFrame)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+        cv2.destroyAllWindows()
+
         # Wait until all tasks have completed
         for each in self._q:
             self._q[each].join()
