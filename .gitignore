@@ -1,4 +1,5 @@
 *.pyc
 *.pyo
 plugins/slots/*
+plugins/slots
 data/*
