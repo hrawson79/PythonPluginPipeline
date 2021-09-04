@@ -24,9 +24,11 @@ class Pipeline:
                 self.createWriter(p)
             elif p['type'] == 'Fork':
                 self.createFork(p)
+            elif p['type']  == 'Merger':
+                self.createMerger(p)
 
     def run(self):
-        log.LogMsg(Logger.INFO, 'Starting pipeline')
+        log.log_msg(Logger.INFO, 'Starting pipeline')
 
         # Start all of the plugins
         for plugin in self._plugins:
@@ -35,8 +37,8 @@ class Pipeline:
         # Display each stage's current frame, if showStage is true
         while True:
             for plugin in self._plugins:
-                if plugin.showStage:
-                    cv2.imshow(plugin.name, plugin.currentFrame)
+                if plugin.show_stage:
+                    cv2.imshow(plugin.name, plugin.current_frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
@@ -46,16 +48,16 @@ class Pipeline:
         for each in self._q:
             self._q[each].join()
 
-        log.LogMsg(Logger.INFO, 'Ending pipeline')
+        log.log_msg(Logger.INFO, 'Ending pipeline')
 
     # Function to create a Generator type plugin
     def createGenerator(self, generator):
         topic = generator['outTopic']
         # Check if topic already added
         if topic in self._q:
-            log.LogMsg(Logger.INFO, topic + ' topic already exists')
+            log.log_msg(Logger.INFO, topic + ' topic already exists')
         else:
-            log.LogMsg(Logger.INFO, 'Adding ' + topic + ' topic to _q')
+            log.log_msg(Logger.INFO, 'Adding ' + topic + ' topic to _q')
             self._q[topic] = Queue()
         # Create a Generator plugin
         self._plugins.append(importlib.import_module(generator['plugin'],"plugins").Generator(
@@ -66,17 +68,17 @@ class Pipeline:
         topic_in = processor['inTopic']
         # Check if input topic already added
         if topic_in in self._q:
-            log.LogMsg(Logger.INFO, topic_in + ' topic already exists')
+            log.log_msg(Logger.INFO, topic_in + ' topic already exists')
         else:
-            log.LogMsg(Logger.INFO, 'Adding ' + topic_in + ' topic to _q')
+            log.log_msg(Logger.INFO, 'Adding ' + topic_in + ' topic to _q')
             self._q[topic_in] = Queue()
         topic_out = processor['outTopic']
 
         # Check if output topic already added
         if topic_out in self._q:
-            log.LogMsg(Logger.INFO, topic_out + ' topic already exists')
+            log.log_msg(Logger.INFO, topic_out + ' topic already exists')
         else:
-            log.LogMsg(Logger.INFO, 'Adding ' + topic_out + ' topic to _q')
+            log.log_msg(Logger.INFO, 'Adding ' + topic_out + ' topic to _q')
             self._q[topic_out] = Queue()
 
         # Create a Processor plugin
@@ -88,9 +90,9 @@ class Pipeline:
         topic = writer['inTopic']
         # Check if topic already added
         if topic in self._q:
-            log.LogMsg(Logger.INFO, topic + ' topic already exists')
+            log.log_msg(Logger.INFO, topic + ' topic already exists')
         else:
-            log.LogMsg(Logger.INFO, 'Adding ' + topic + ' topic to _q')
+            log.log_msg(Logger.INFO, 'Adding ' + topic + ' topic to _q')
             self._q[topic] = Queue()
 
         # Create a Writer plugin
@@ -102,22 +104,36 @@ class Pipeline:
         topic_in = fork['inTopic']
         # Check if input topic already added
         if topic_in in self._q:
-            log.LogMsg(Logger.INFO, topic_in + ' topic already exists')
+            log.log_msg(Logger.INFO, topic_in + ' topic already exists')
         else:
-            log.LogMsg(Logger.INFO, 'Adding ' + topic_in + ' topic to _q')
+            log.log_msg(Logger.INFO, 'Adding ' + topic_in + ' topic to _q')
             self._q[topic_in] = Queue()
 
         out_topics = []
         for topic_out in fork['outTopic']:
             # Check if output topic already added
             if topic_out in self._q:
-                log.LogMsg(Logger.INFO, topic_out + ' topic already exists')
+                log.log_msg(Logger.INFO, topic_out + ' topic already exists')
             else:
-                log.LogMsg(Logger.INFO, 'Adding ' + topic_out + ' topic to _q')
+                log.log_msg(Logger.INFO, 'Adding ' + topic_out + ' topic to _q')
                 self._q[topic_out] = Queue()
             # Add to out_topics list
             out_topics.append(self._q[topic_out])
                 
-        # Create a Processor plugin
+        # Create a Fork plugin
         self._plugins.append(importlib.import_module(fork['plugin'],"plugins").Fork(
             self._q[topic_in], out_topics, 1, fork['name'], fork['config']))
+
+    # Function to create a Merger type plugin
+    def createMerger(self, merger):
+        topic = merger['inTopic']
+        # Check if topic already added
+        if topic in self._q:
+            log.log_msg(Logger.INFO, topic + ' topic already exists')
+        else:
+            log.log_msg(Logger.INFO, 'Adding ' + topic + ' topic to _q')
+            self._q[topic] = Queue()
+
+        # Create a Merger plugin
+        self._plugins.append(importlib.import_module(merger['plugin'],"plugins").Merger(
+            self._q[topic], 1, merger['name'], merger['config']))

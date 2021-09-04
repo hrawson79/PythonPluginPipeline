@@ -12,10 +12,10 @@ class Log():
   def __init__(self, level=1):
     self.level = level
 
-  def setLevel(self, level):
+  def set_level(self, level):
     self.level = level
 
-  def LogMsg(self, type, msg):
+  def log_msg(self, type, msg):
     if (type == Logger.ERROR and self.level > 0):
       print(str(datetime.datetime.now()) + '\t' + 'ERROR' + '\t' + msg)
     elif (type == Logger.WARNING and self.level > 1):

@@ -3,6 +3,7 @@ from threading import Thread
 import threading
 
 from framework.logger import Log, Logger
+from framework.configurator import *
 
 # Object that signals shutdown
 _shutdown = -1
@@ -10,33 +11,26 @@ _shutdown = -1
 log = Log(5)
 
 class Writer(threading.Thread):
-    def __init__(self, q_in, threadID, name, config):
+    def __init__(self, q_in, thread_id, name, config):
         threading.Thread.__init__(self)
         self.q_in = q_in
-        self.threadID = threadID
+        self.thread_id = thread_id
         self.name = name
-        self.messageCount = 0
+        self.message_count = 0
 
         # Config
-        if 'logLevel' in config:
-            self.logLevel = config['logLevel']
-        else:
-            self.logLevel = 5
-        
-        if 'showStage' in config:
-            self.showStage = config['showStage']
-        else:
-            self.showStage = False
+        self.log_level = load_config('logLevel', config, 5)
+        self.show_stage = load_config('showStage', config, False)
 
-        log.setLevel(int(self.logLevel))
+        log.set_level(int(self.log_level))
 
     def run(self):
-        log.LogMsg(Logger.INFO, self.name + ' started running')
+        log.log_msg(Logger.INFO, self.name + ' started running')
         
         # Write data
         self.write()
 
-        log.LogMsg(Logger.INFO, self.name + ' finished running and wrote ' + str(self.messageCount) + ' messages')
+        log.log_msg(Logger.INFO, self.name + ' finished running and wrote ' + str(self.message_count) + ' messages')
 
     def write(self):
         # Add logic to write data to file here
@@ -46,10 +40,10 @@ class Writer(threading.Thread):
 
             # Check for shutdown signal
             if data is _shutdown:
-                log.LogMsg(Logger.INFO, self.name + ' received shutdown')
+                log.log_msg(Logger.INFO, self.name + ' received shutdown')
                 self.q_in.task_done()
                 break
             else:
-                #log.LogMsg(Logger.DEBUG, self.name + ' received ' + str(data) + ' to process')
+                #log.log_msg(Logger.DEBUG, self.name + ' received ' + str(data) + ' to process')
                 self.q_in.task_done()
-                self.messageCount += 1
+                self.message_count += 1

@@ -1,0 +1,44 @@
+[
+    {
+        "name": "stage-1",
+        "plugin": ".slots.frame_grabber",
+        "type": "Generator",
+        "inTopic": "None",
+        "outTopic": "topic_1",
+        "config": {
+            "logLevel": "5",
+            "showStage": false
+        }
+    },
+    {
+        "name": "stage-2",
+        "plugin": ".default_fork",
+        "type": "Fork",
+        "inTopic": "topic_1",
+        "outTopic": ["topic_2"],
+        "config": {
+            "logLevel": "5"
+        }
+    },
+    {
+        "name": "stage-3-1",
+        "plugin": ".slots.reel_eval",
+        "type": "Processor",
+        "inTopic": "topic_2",
+        "outTopic": "topic_3",
+        "config": {
+            "logLevel": "5",
+            "showStage": true
+        }
+    },
+    {
+        "name": "stage-4",
+        "plugin": ".slots.reel_merge",
+        "type": "Merger",
+        "inTopic": "topic_3",
+        "outTopic": "None",
+        "config": {
+            "logLevel": "5"
+        }
+    }
+]

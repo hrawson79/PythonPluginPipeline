@@ -10,28 +10,28 @@ _shutdown = -1
 log = Log(5)
 
 class Generator(threading.Thread):
-    def __init__(self, q_out, threadID, name, config):
+    def __init__(self, q_out, thread_id, name, config):
         threading.Thread.__init__(self)
         self.q_out = q_out
-        self.threadID = threadID
+        self.thread_id = thread_id
         self.name = name
-        self.messageCount = 0
+        self.message_count = 0
 
         # Config
         if 'logLevel' in config:
-            self.logLevel = config['logLevel']
+            self.log_level = config['logLevel']
         else:
-            self.logLevel = 5
+            self.log_level = 5
 
         if 'showStage' in config:
-            self.showStage = config['showStage']
+            self.show_stage = config['showStage']
         else:
-            self.showStage = False
+            self.show_stage = False
 
-        log.setLevel(int(self.logLevel))
+        log.set_level(int(self.log_level))
 
     def run(self):
-        log.LogMsg(Logger.INFO, self.name + ' started running')
+        log.log_msg(Logger.INFO, self.name + ' started running')
 
         # Generate data
         self.generate()
@@ -39,10 +39,10 @@ class Generator(threading.Thread):
         # Send the shutdown signal to next stage
         self.q_out.put(_shutdown)
 
-        log.LogMsg(Logger.INFO, self.name + ' finished running and generated ' + str(self.messageCount) + ' messages')
+        log.log_msg(Logger.INFO, self.name + ' finished running and generated ' + str(self.message_count) + ' messages')
 
     def generate(self):
         # Add logic to generate data and push output
         for i in range(100):
             self.q_out.put(i)
-            self.messageCount += 1
+            self.message_count += 1

@@ -3,6 +3,7 @@ from threading import Thread
 import threading
 
 from framework.logger import Log, Logger
+from framework.configurator import *
 
 # Object that signals shutdown
 _shutdown = -1
@@ -10,26 +11,22 @@ _shutdown = -1
 log = Log(5)
 
 class Fork(threading.Thread):
-    def __init__(self, q_in, q_out, threadID, name, config):
+    def __init__(self, q_in, q_out, thread_id, name, config):
         threading.Thread.__init__(self)
         self.q_in = q_in
         self.q_out = q_out
-        self.threadID = threadID
+        self.thread_id = thread_id
         self.name = name
-        self.messageCount = 0
+        self.message_count = 0
 
         # Config
-        if 'logLevel' in config:
-            self.logLevel = config['logLevel']
-        else:
-            self.logLevel = 5
+        self.log_level = load_config('logLevel', config, 5)
+        self.show_stage = False
 
-        self.showStage = False
-
-        log.setLevel(int(self.logLevel))
+        log.set_level(int(self.log_level))
 
     def run(self):
-        log.LogMsg(Logger.INFO, self.name + ' started running')
+        log.log_msg(Logger.INFO, self.name + ' started running')
 
         # Fork data
         self.fork()
@@ -38,7 +35,7 @@ class Fork(threading.Thread):
         for q in self.q_out:
             q.put(_shutdown)
         
-        log.LogMsg(Logger.INFO, self.name + ' finished running and forked ' + str(self.messageCount) + ' messages')
+        log.log_msg(Logger.INFO, self.name + ' finished running and forked ' + str(self.message_count) + ' messages')
 
     def fork(self):
         while True:
@@ -47,12 +44,12 @@ class Fork(threading.Thread):
 
             # Check for shutdown signal
             if data is _shutdown:
-                log.LogMsg(Logger.INFO, self.name + ' received shutdown')
+                log.log_msg(Logger.INFO, self.name + ' received shutdown')
                 self.q_in.task_done()
                 break
             else:
-                log.LogMsg(Logger.INFO, self.name + ' received ' + str(data) + ' to process')
+                #log.log_msg(Logger.DEBUG, self.name + ' received ' + str(data) + ' to process')
                 for q in self.q_out:
-                    q.put(data*2)
+                    q.put(data)
                 self.q_in.task_done()
-                self.messageCount += 1
+                self.message_count += 1
