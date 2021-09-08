@@ -12,10 +12,10 @@
     },
     {
         "name": "stage-2",
-        "plugin": ".default_fork",
+        "plugin": ".slots.reel_fork",
         "type": "Fork",
         "inTopic": "topic_1",
-        "outTopic": ["topic_2"],
+        "outTopic": ["topic_2", "topic_3"],
         "config": {
             "logLevel": "5"
         }
@@ -25,20 +25,38 @@
         "plugin": ".slots.reel_eval",
         "type": "Processor",
         "inTopic": "topic_2",
-        "outTopic": "topic_3",
+        "outTopic": "topic_7",
         "config": {
             "logLevel": "5",
-            "showStage": true
+            "showStage": true,
+            "reel": 0
+        }
+    },
+    {
+        "name": "stage-3-2",
+        "plugin": ".slots.reel_eval",
+        "type": "Processor",
+        "inTopic": "topic_3",
+        "outTopic": "topic_7",
+        "config": {
+            "logLevel": "5",
+            "showStage": true,
+            "reel": 1
         }
     },
     {
         "name": "stage-4",
         "plugin": ".slots.reel_merge",
         "type": "Merger",
-        "inTopic": "topic_3",
+        "inTopic": "topic_7",
         "outTopic": "None",
         "config": {
-            "logLevel": "5"
+            "logLevel": "5",
+            "showStage": false,
+            "writeData": true,
+            "numOfReels": 2,
+            "numOfPositions": 4,
+            "symbolDiffThreshold": 50
         }
     }
 ]
